@@ -14,13 +14,20 @@ def drift_l1(
 
 
 def drift_l2(
-    gamma0: float, gamma1: float, gamma2: float, interest_rate: float, gdp_ratio: float
+    gamma0: float,
+    gamma1: float,
+    gamma2: float,
+    interest_rate: float,
+    gdp_ratio: float,
+    l2_curr: float,
 ) -> float:
-    return gamma0 - gamma1 * interest_rate + gamma2 * gdp_ratio
+    return (gamma0 - gamma1 * interest_rate + gamma2 * gdp_ratio) * l2_curr
 
 
-def drift_l3(v0: float, v1: float, gdp_ratio: float) -> float:
-    return v0 + v1 * gdp_ratio
+# drift is constrained by fraction of output
+def drift_l3(v0: float, v1: float, gdp_ratio: float, l3_curr: float, y: float) -> float:
+    den = y * gdp_ratio
+    return (v0 + v1 * gdp_ratio) * l3_curr * (1.0 - l3_curr / den) if den > 0.0 else 0.0
 
 
 def drift_a(l2_curr: float, beta: float) -> float:
@@ -92,21 +99,14 @@ class EvolveEconomy:
         self.a_init = a_init
         self.k_init = k_init
         self.y_init = y(k_init, a_init, l1_init, alpha)
-        # self.l1 = [l1_init]
-        # self.l2 = [l2_init]
-        # self.l3 = [l3_init]
-        # self.a = [a_init]
-        # self.k = [k_init]
-        # self.y = [y(k_init, a_init, l1_init, alpha)]
-        # TODO do I need to assert bounds on l2 and l3 drift?
 
     def execute_period(
         self, dt: float, interest_rate: float, gdp_ratio: float, econ: Economy
     ):
         l2_drift = drift_l2(
-            self.gamma0, self.gamma1, self.gamma2, interest_rate, gdp_ratio
+            self.gamma0, self.gamma1, self.gamma2, interest_rate, gdp_ratio, econ.l2[-1]
         )
-        l3_drift = drift_l3(self.v0, self.v1, gdp_ratio)
+        l3_drift = drift_l3(self.v0, self.v1, gdp_ratio, econ.l3[-1], econ.y[-1])
         l1_drift = drift_l1(
             self.eta, econ.l1[-1], econ.l2[-1], econ.l3[-1], l2_drift, l3_drift
         )
@@ -121,28 +121,13 @@ class EvolveEconomy:
         )
         a_drift = drift_a(econ.l2[-1], self.beta)
         curr_l1 = max(l1_drift * dt + econ.l1[-1], 0)
-        curr_l2 = max(econ.l2[-1] * l2_drift * dt + econ.l2[-1], 0)
-        curr_l3 = max(econ.l3[-1] * l3_drift * dt + econ.l3[-1], 0)
+        curr_l2 = max(l2_drift * dt + econ.l2[-1], 0)
+        curr_l3 = max(l3_drift * dt + econ.l3[-1], 0)
 
         curr_k = max(econ.k[-1] * k_drift * dt + econ.k[-1], 0)
         curr_a = a_drift * dt + econ.a[-1]
         curr_y = y(curr_k, curr_a, curr_l1, self.alpha)
         curr_l = curr_l1 + curr_l2 + curr_l3
-        print("kdrift", k_drift)
-        # if curr_k > 0:
-        # print(
-        #     "l2",
-        #    curr_l2,
-        #    "l1",
-        #    curr_l1,
-        #    "k",
-        #    curr_k,
-        #    "kdrift",
-        #    k_drift,
-        #   "y",
-        #   curr_y,
-        # )
-
         econ.l1.append(curr_l1)
         econ.l2.append(curr_l2)
         econ.l3.append(curr_l3)
@@ -206,4 +191,5 @@ if __name__ == "__main__":
         # plt.plot(sim.t, sim.l3, label="l3")
         # plt.plot(sim.t, sim.a, label="a")
     plt.legend(loc="upper left")
+    plt.savefig(f"output_per_labor_{t}.eps", format="eps")
     plt.savefig(f"output_per_labor_{t}.png")
