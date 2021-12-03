@@ -10,18 +10,20 @@ def drift_l1(
     l2_drift: float,
     l3_drift: float,
 ) -> float:
-    return eta * l1_curr + (eta - l2_drift) * l2_curr + (eta - l3_drift) * l3_curr
+    return eta * l1_curr + eta * l2_curr - l2_drift + eta * l3_curr - l3_drift
 
 
 def drift_l2(
     gamma0: float,
     gamma1: float,
     gamma2: float,
-    interest_rate: float,
+    deviation_from_natural_interest_rate: float,  # i*-i
     gdp_ratio: float,
     l2_curr: float,
 ) -> float:
-    return (gamma0 - gamma1 * interest_rate + gamma2 * gdp_ratio) * l2_curr
+    return (
+        gamma0 + gamma1 * deviation_from_natural_interest_rate + gamma2 * gdp_ratio
+    ) * l2_curr
 
 
 # drift is constrained by fraction of output
@@ -101,10 +103,19 @@ class EvolveEconomy:
         self.y_init = y(k_init, a_init, l1_init, alpha)
 
     def execute_period(
-        self, dt: float, interest_rate: float, gdp_ratio: float, econ: Economy
+        self,
+        dt: float,
+        deviation_from_natural_interest_rate: float,
+        gdp_ratio: float,
+        econ: Economy,
     ):
         l2_drift = drift_l2(
-            self.gamma0, self.gamma1, self.gamma2, interest_rate, gdp_ratio, econ.l2[-1]
+            self.gamma0,
+            self.gamma1,
+            self.gamma2,
+            deviation_from_natural_interest_rate,
+            gdp_ratio,
+            econ.l2[-1],
         )
         l3_drift = drift_l3(self.v0, self.v1, gdp_ratio, econ.l3[-1], econ.y[-1])
         l1_drift = drift_l1(
@@ -140,7 +151,11 @@ class EvolveEconomy:
         econ.t.append(econ.t[-1] + dt)
 
     def simulate(
-        self, interest_rate: float, gdp_ratio: float, t: float, n: int
+        self,
+        deviation_from_natural_interest_rate: float,
+        gdp_ratio: float,
+        t: float,
+        n: int,
     ) -> Economy:
         econ = Economy(
             y=self.y_init,
@@ -152,14 +167,16 @@ class EvolveEconomy:
         )
         dt = t / (n)
         for i in range(n):
-            self.execute_period(dt, interest_rate, gdp_ratio, econ)
+            self.execute_period(
+                dt, deviation_from_natural_interest_rate, gdp_ratio, econ
+            )
         return econ
 
 
 if __name__ == "__main__":
     economy = EvolveEconomy(
         eta=0.02,
-        gamma0=0.02,
+        gamma0=0.004,
         gamma1=0.2,
         gamma2=0.005,  # small amount of spending on R&D
         v0=0.001,  # Low rate of bureacracy with no govt spending
@@ -177,15 +194,19 @@ if __name__ == "__main__":
     t = 100
     n = 100000
     example_inputs = [
-        (0.05, 0.15),
-        (0.02, 0.15),
-        (0.05, 0.0),
-        (0.15, 0.15),
-        (0.05, 0.8),
+        (0.03, 0.15),
+        (0.06, 0.15),
+        (0.03, 0.0),
+        (-0.07, 0.15),
+        (0.03, 0.8),
     ]
     for rate, ratio in example_inputs:
-        sim = economy.simulate(interest_rate=rate, gdp_ratio=ratio, t=t, n=n)
-        plt.plot(sim.t, sim.y_per_labor, label=f"rate={rate}, gdp_ratio={ratio}")
+        sim = economy.simulate(
+            deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
+        )
+        plt.plot(
+            sim.t, sim.y_per_labor, label=f"rate deviation={rate}, gdp_ratio={ratio}"
+        )
         # plt.plot(sim.t, sim.l1, label="l1")
         # plt.plot(sim.t, sim.l2, label="l2")
         # plt.plot(sim.t, sim.l3, label="l3")
