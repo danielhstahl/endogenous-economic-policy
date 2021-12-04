@@ -121,15 +121,36 @@ I focus on output per capita, \(\frac{Y(t)}{L(t)}\). There are three possible lo
 \subsubsection{Exponential growth}
 If \(\eta >\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > 0\) then \(L_2\) will continue to grow.  This implies that \(A(t)\) will grow without bound, and continued technological growth can continue to provide improved output per capita.  However, this is only the case if both \(L_2(t)\) grows slowly enough to not cause capital to be consumed and \(L_1(t)\) also continues to grow.  
 
-\subsection{Steady state}
+\subsubsection{Steady state}
 If \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g <0\) then \(L_2(t)\) will shrink to zero and \(A(t)\) will converge to a constant.  If \(L_1(t)\) continues to grow (is not crowded out by \(L_3(t)\)), the economy reaches a long-run steady state in much the same way as the traditional Solow model.
 
-\subsection{Economic collapse}
+\subsubsection{Economic collapse}
 If either \(L_2\) or \(L_3\) grow too large, either \(K\) or \(L_1\) can shrink to zero.  This can occur if interest rates are held too low or \(g\) is too large.  \(L_2\) will grow too quickly if \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > \eta\).  Likewise, \(L_3\) will crowd out \(L_1\) if \(v_0+v_1g > \eta\) and \(g\) IS SOMETHING.
 
 \section{Results}
 
-Since the model is a system of non-linear differential equations, the model must be solved numerically.  I show plots of two economies under different interest rate and fiscal policy regimes.  
+Since the model is a system of non-linear differential equations, the model must be solved numerically.  I show plots of two economies under different interest rate and fiscal policy regimes.  The full parameters for these two economies:
+
+\begin{center}
+\begin{tabular}{ c c c }
+      Variable  & Economy 1 Value & Economy 2 Value \\ 
+      \(\eta\) & 0.02 & 0.02 \\  
+      \(\gamma_0\) & 0.004 & 0.04  \\  
+      \(\gamma_1\) & 0.2 & 0.2  \\  
+      \(\gamma_2\) & 0.005 & 0.005  \\ 
+      \(v_0\) & 0.001 & 0.001  \\  
+      \(v_1\) & 0.05 & 0.05  \\  
+      \(\beta\) & 0.03 & 0.03  \\  
+      \(\alpha\) & 0.4 & 0.4  \\  
+      \(\delta\) & 0.1 & 0.1  \\  
+      \(s\) & 0.3 & 0.3  \\ 
+      \(L_1(0)\) & 3.0 & 3.0  \\ 
+      \(L_2(0)\) & 1.0 & 1.0  \\ 
+      \(L_3(0)\) & 1.0 & 1.0  \\ 
+      \(A(0)\) & 2.0 & 2.0  \\ 
+      \(K(0)\) & 10.0 & 10.0  
+\end{tabular}
+\end{center}
 
 \subsection{Low base growth of research}
 
@@ -169,8 +190,6 @@ In the first economy, the base growth rate of \(L_2\) is low, providing quite a 
 \end{minipage}
 
 The economy becomes stagnant when \(L_2\) goes to zero and collapses when \(L_3\) grows without bound.  For low levels of fiscal involvement there is a tradeoff between the positive impact that fiscal policy has on research and the dicensitives to work and the increased size of the bureaucratic state.  As can be seen with the blue and green lines in the total output chart, the output difference between a 0\% and 15\% fiscal stimulus is very small.  It requires a quite large fiscal ouput (80\% of the economy) to lead to economic collpase.
-
-
 
 \subsection{High base growth of research}
 
