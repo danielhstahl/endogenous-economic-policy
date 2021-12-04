@@ -174,25 +174,42 @@ class EvolveEconomy:
 
 
 if __name__ == "__main__":
-    economy1 = EvolveEconomy(
-        eta=0.02,
-        gamma0=0.004,
-        gamma1=0.2,
-        gamma2=0.005,  # small amount of spending on R&D
-        v0=0.001,  # Low rate of bureacracy with no govt spending
-        v1=0.05,
-        beta=0.03,
-        alpha=0.4,
-        delta=0.1,
-        s=0.3,
-        l1_init=3.0,
-        l2_init=1.0,
-        l3_init=1.0,
-        a_init=2.0,
-        k_init=10.0,
-    )
-    t = 100
-    n = 100000
+    economy_parameters = [
+        {
+            "eta": 0.02,
+            "gamma0": 0.004,
+            "gamma1": 0.2,
+            "gamma2": 0.005,  # small amount of spending on R&D
+            "v0": 0.001,  # Low rate of bureacracy with no govt spending
+            "v1": 0.05,
+            "beta": 0.03,
+            "alpha": 0.4,
+            "delta": 0.1,
+            "s": 0.3,
+            "l1_init": 3.0,
+            "l2_init": 1.0,
+            "l3_init": 1.0,
+            "a_init": 2.0,
+            "k_init": 10.0,
+        },
+        {
+            "eta": 0.02,
+            "gamma0": 0.04,  # large enough to cause L2 to explode relative to l1 and l3
+            "gamma1": 0.2,
+            "gamma2": 0.005,  # small amount of spending on R&D
+            "v0": 0.001,  # Low rate of bureacracy with no govt spending
+            "v1": 0.05,
+            "beta": 0.03,
+            "alpha": 0.4,
+            "delta": 0.1,
+            "s": 0.3,
+            "l1_init": 3.0,
+            "l2_init": 1.0,
+            "l3_init": 1.0,
+            "a_init": 2.0,
+            "k_init": 10.0,
+        },
+    ]
     example_inputs = [
         (0.03, 0.15),
         (0.06, 0.15),
@@ -200,52 +217,44 @@ if __name__ == "__main__":
         (-0.07, 0.15),
         (0.03, 0.8),
     ]
-    for rate, ratio in example_inputs:
-        sim = economy1.simulate(
-            deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
-        )
-        plt.plot(
-            sim.t, sim.y_per_labor, label=f"rate deviation={rate}, gdp_ratio={ratio}"
-        )
-    plt.legend(loc="upper left")
-    plt.savefig(f"economy1_{t}.eps", format="eps")
-    plt.savefig(f"output_per_labor_{t}.png")
-    plt.clf()
-
-    economy2 = EvolveEconomy(
-        eta=0.02,
-        gamma0=0.04,  # large enough to cause L2 to explode relative to l1 and l3
-        gamma1=0.2,
-        gamma2=0.005,  # small amount of spending on R&D
-        v0=0.001,  # Low rate of bureacracy with no govt spending
-        v1=0.05,
-        beta=0.03,
-        alpha=0.4,
-        delta=0.1,
-        s=0.3,
-        l1_init=3.0,
-        l2_init=1.0,
-        l3_init=1.0,
-        a_init=2.0,
-        k_init=10.0,
-    )
     t = 100
     n = 100000
-    example_inputs = [
-        (0.03, 0.15),
-        (0.06, 0.15),
-        (0.03, 0.0),
-        (-0.07, 0.15),
-        (0.03, 0.8),
-    ]
-    for rate, ratio in example_inputs:
-        sim = economy2.simulate(
-            deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
-        )
-        plt.plot(
-            sim.t, sim.y_per_labor, label=f"rate deviation={rate}, gdp_ratio={ratio}"
-        )
-    plt.legend(loc="upper left")
-    plt.savefig(f"economy2_{t}.eps", format="eps")
-    plt.savefig(f"output_per_labor_{t}.png")
-    plt.clf()
+    for index, economy in enumerate(economy_parameters):
+        econ = EvolveEconomy(**economy)
+        for sub_index, (rate, ratio) in enumerate(example_inputs):
+            sim = econ.simulate(
+                deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
+            )
+            plt.figure(
+                f"econ_{index}_run_main"
+            )  # this needs to aggregate plots across rate scenarios
+            plt.plot(
+                sim.t,
+                sim.y_per_labor,
+                label=f"rate deviation={rate}, gdp_ratio={ratio}",
+            )
+            plt.figure(f"econ_{index}_run_{sub_index}_labor")
+            plt.plot(
+                sim.t,
+                sim.l1,
+                label=f"L1",
+            )
+            plt.plot(
+                sim.t,
+                sim.l2,
+                label=f"L2",
+            )
+            plt.plot(
+                sim.t,
+                sim.l3,
+                label=f"L3",
+            )
+            plt.legend(loc="upper left")
+            plt.title(f"Labor for rate deviation={rate}, gdp_ratio={ratio}")
+            plt.savefig(f"images/econ_{index}_run_{sub_index}_labor.eps", format="eps")
+        plt.figure(f"econ_{index}_run_main")
+        plt.title(f"Output per capita")
+        plt.legend(loc="upper left")
+        plt.savefig(f"images/economy_{index}.eps", format="eps")
+        # plt.savefig(f"output_per_labor_{t}.png")
+        # plt.clf()

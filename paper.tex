@@ -119,31 +119,95 @@ Finally, capital follows the familiar dynamics from Solow:
 I focus on output per capita, \(\frac{Y(t)}{L(t)}\). There are three possible long-run states to the model.  First is exponential growth.  This occurs if \(A(t)\) is allowed to grow through time while not crowding out growth in \(L_1(t)\).  The second is a steady state.  This occurs if \(L_2(t)\) shrinks to zero, causing \(A(t)\) to converge to a constant.  The third is economic collapse.  This occurs if \(L_1(t)\) shrinks to zero due to crowding out from \(L_2(t)\) and \(L_3(t)\).  
 
 \subsubsection{Exponential growth}
-If \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > 0\) then \(L_2\) will continue to grow.  This implies that \(A(t)\) will grow without bound, and continued technological growth can continue to provide improved output per capita.  However, this is only the case if both \(L_2(t)\) grows slowly enough to not cause capital to be consumed and \(L_1(t)\) also continues to grow.  
+If \(\eta >\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > 0\) then \(L_2\) will continue to grow.  This implies that \(A(t)\) will grow without bound, and continued technological growth can continue to provide improved output per capita.  However, this is only the case if both \(L_2(t)\) grows slowly enough to not cause capital to be consumed and \(L_1(t)\) also continues to grow.  
 
 \subsection{Steady state}
-If \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g <0\) then \(L_2(t)\) will shrink to zero and \(A(t)\) will converge to a constant.  Much like the original Solow model, the economy reaches a long-run steady state.  
+If \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g <0\) then \(L_2(t)\) will shrink to zero and \(A(t)\) will converge to a constant.  If \(L_1(t)\) continues to grow (is not crowded out by \(L_3(t)\)), the economy reaches a long-run steady state in much the same way as the traditional Solow model.
 
 \subsection{Economic collapse}
-If either \(L_2\) or \(L_3\) grow too large, the \(K\) can shrink to zero or \(L_1\) can shrink to zero.  This can occur if interest rates are held too low or \(g\) is too large.  
+If either \(L_2\) or \(L_3\) grow too large, either \(K\) or \(L_1\) can shrink to zero.  This can occur if interest rates are held too low or \(g\) is too large.  \(L_2\) will grow too quickly if \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > \eta\).  Likewise, \(L_3\) will crowd out \(L_1\) if \(v_0+v_1g > \eta\) and \(g\) IS SOMETHING.
 
 \section{Results}
 
-Since the model is a system of non-linear differential equations, the model must be solved numerically.  
+Since the model is a system of non-linear differential equations, the model must be solved numerically.  I show plots of two economies under different interest rate and fiscal policy regimes.  
 
-\begin{figure}[htb]
+\subsection{Low base growth of research}
+
+In the first economy, the base growth rate of \(L_2\) is low, providing quite a bit of freedom for monetary policy.  
+
+\begin{minipage}[c]{0.8\linewidth}
 \begin{framed}
+\centering
+\includegraphics[width=1\textwidth]{images/economy_0}
+\end{framed}
+\end{minipage}
 
+
+\begin{minipage}{\linewidth}
+\begin{framed}
 \begin{minipage}[t]{.48\textwidth}
 \centering
-\includegraphics[width=1\textwidth]{economy1_100}
+\includegraphics[width=1\textwidth]{images/econ_0_run_0_labor}
 \end{minipage}\hfill
 \begin{minipage}[t]{.48\textwidth}
 \centering
-\includegraphics[width=1\textwidth]{economy2_100}
+\includegraphics[width=1\textwidth]{images/econ_0_run_1_labor}
+\end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_0_run_2_labor}
+\end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_0_run_3_labor}
+\end{minipage} \hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_0_run_4_labor}
 \end{minipage}\hfill
 \end{framed}
-\end{figure}
+\end{minipage}
+
+The economy becomes stagnant when \(L_2\) goes to zero and collapses when \(L_3\) grows without bound.  For low levels of fiscal involvement there is a tradeoff between the positive impact that fiscal policy has on research and the dicensitives to work and the increased size of the bureaucratic state.  As can be seen with the blue and green lines in the total output chart, the output difference between a 0\% and 15\% fiscal stimulus is very small.  It requires a quite large fiscal ouput (80\% of the economy) to lead to economic collpase.
+
+
+
+\subsection{High base growth of research}
+
+In the second economy, the base growth rate of \(L_2\) is high, so that even mild interest rate regimes have deliterious long run impacts.
+
+\begin{minipage}{0.8\linewidth}
+\begin{framed}
+\centering
+\includegraphics[width=1\textwidth]{images/economy_1}
+\end{framed}
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\begin{framed}
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_1_run_0_labor}
+\end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_1_run_1_labor}
+\end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_1_run_2_labor}
+\end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_1_run_3_labor}
+\end{minipage} \hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_1_run_4_labor}
+\end{minipage}\hfill
+\end{framed}
+\end{minipage}
 
 \section{Conclusion}
 
