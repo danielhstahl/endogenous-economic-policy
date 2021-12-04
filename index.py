@@ -174,7 +174,7 @@ class EvolveEconomy:
 
 
 if __name__ == "__main__":
-    economy = EvolveEconomy(
+    economy1 = EvolveEconomy(
         eta=0.02,
         gamma0=0.004,
         gamma1=0.2,
@@ -201,16 +201,51 @@ if __name__ == "__main__":
         (0.03, 0.8),
     ]
     for rate, ratio in example_inputs:
-        sim = economy.simulate(
+        sim = economy1.simulate(
             deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
         )
         plt.plot(
             sim.t, sim.y_per_labor, label=f"rate deviation={rate}, gdp_ratio={ratio}"
         )
-        # plt.plot(sim.t, sim.l1, label="l1")
-        # plt.plot(sim.t, sim.l2, label="l2")
-        # plt.plot(sim.t, sim.l3, label="l3")
-        # plt.plot(sim.t, sim.a, label="a")
     plt.legend(loc="upper left")
-    plt.savefig(f"output_per_labor_{t}.eps", format="eps")
+    plt.savefig(f"economy1_{t}.eps", format="eps")
     plt.savefig(f"output_per_labor_{t}.png")
+    plt.clf()
+
+    economy2 = EvolveEconomy(
+        eta=0.02,
+        gamma0=0.04,  # large enough to cause L2 to explode relative to l1 and l3
+        gamma1=0.2,
+        gamma2=0.005,  # small amount of spending on R&D
+        v0=0.001,  # Low rate of bureacracy with no govt spending
+        v1=0.05,
+        beta=0.03,
+        alpha=0.4,
+        delta=0.1,
+        s=0.3,
+        l1_init=3.0,
+        l2_init=1.0,
+        l3_init=1.0,
+        a_init=2.0,
+        k_init=10.0,
+    )
+    t = 100
+    n = 100000
+    example_inputs = [
+        (0.03, 0.15),
+        (0.06, 0.15),
+        (0.03, 0.0),
+        (-0.07, 0.15),
+        (0.03, 0.8),
+    ]
+    for rate, ratio in example_inputs:
+        sim = economy2.simulate(
+            deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
+        )
+        plt.plot(
+            sim.t, sim.y_per_labor, label=f"rate deviation={rate}, gdp_ratio={ratio}"
+        )
+    plt.legend(loc="upper left")
+    plt.savefig(f"economy2_{t}.eps", format="eps")
+    plt.savefig(f"output_per_labor_{t}.png")
+    plt.clf()
