@@ -77,7 +77,7 @@ Traditional economic growth models do not include the impact of government polic
 \section{Model}
 
 \subsection{Definitions}
-There are three homogenous pools of labor.  \(L_1(t)\) is labor that, combined with capital, produces output.  \(L_2(t)\) is labor that works in research and development.  This labor creates technological efficiencies, \(A(t)\), which enhance the productivity of \(L_1(t)\).  Finally, there is \(L_3(t)\), which is either the ``bureaucratic'' labor which maintains the administrative state, or represents capable labor that chooses not to participate in the labor force.  Since \(L_3(t)\) does not impact the output, the model is agnostic to whether labor force participation or bureaucratic administration is the primary driver of \(L_3(t)\).  There is capital \(K(t)\).  \(i\) is the interest rate set by the central bank, and \(g\) is the fraction of output that is used for government spending.  It is assumed that this spending is neutral from an output perspective: that is, labor and capital that is employed through fiscal policy has the same output as private sector labor and capital and in the same proportions.
+There are three homogenous pools of labor.  \(L_1(t)\) is labor that, combined with capital, produces output.  \(L_2(t)\) is labor that works in research and development.  This labor creates technological efficiencies, \(A(t)\), which enhance the productivity of \(L_1(t)\).  Finally, there is \(L_3(t)\), which is either the ``bureaucratic'' labor which maintains the administrative state, or represents capable labor that chooses not to participate in the labor force.  Since \(L_3(t)\) does not impact the output, the model is agnostic to whether labor force participation or bureaucratic administration is the primary driver of \(L_3(t)\).  There is capital \(K(t)\).  \(i\) is the interest rate set by the central bank, which is assumed to be exogenously shocked and then reverts to the natural rate.  \(g\) is the fraction of output that is used for government spending.  It is assumed that this spending is neutral from an output perspective: that is, labor and capital that is employed through fiscal policy has the same output as private sector labor and capital and in the same proportions.
 \\
 \\
 Following Solow \cite{solow}, output \(Y(t)\) takes the following form:
@@ -96,7 +96,9 @@ Here \(v_0\) is the (presumably small) administrative state in the case of zero 
 
 \[\frac{dL_2(t)}{dt}=\left(\gamma_0+\gamma_1 (i^*-i) +\gamma_2 g\right) L_2(t) \]
 
-Here \(\gamma_0\) is the non-intervention (baseline) rate of growth in research labor, \(\gamma_1\) is the sensitivity of labor to the prevailing interest rate's deviation from the ``natural'' rate \(i^*\), and \(\gamma_2\) is the proportion of government spending that is dedicated to research and development.  For instance, federal grants to universities would be considered spending on basic research.   
+Here \(\gamma_0\) is the non-intervention (baseline) rate of growth in research labor, \(\gamma_1\) is the sensitivity of labor to the prevailing interest rate's deviation from the ``natural'' rate \(i^*\), and \(\gamma_2\) is the proportion of government spending that is dedicated to research and development.  For instance, federal grants to universities would be considered spending on basic research.  \(i\) has the following dynamics:
+
+\[\frac{di(t)}{dt}=a\left(i^*-i\right)\]
 \\
 \\
 \(L_1\) is determined by the above equations:
@@ -122,36 +124,35 @@ If \(\eta >\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > 0\) then \(L_2\) will continue
 If \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g <0\) then \(L_2(t)\) will shrink to zero and \(A(t)\) will converge to a constant.  If \(L_1(t)\) continues to grow (is not crowded out by \(L_3(t)\)), the economy reaches a long-run steady state in much the same way as the traditional Solow model.
 
 \subsubsection{Economic collapse}
-If either \(L_2\) or \(L_3\) grow too large, either \(K\) or \(L_1\) can shrink to zero.  This can occur if interest rates are held too low or \(g\) is too large.  \(L_2\) will grow too quickly if \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > \eta\).  Likewise, \(L_3\) will crowd out \(L_1\) if \(v_0+v_1g > \eta\) and \(g\) IS SOMETHING.
+If either \(L_2\) or \(L_3\) grow too large, either \(K\) or \(L_1\) can shrink to zero.  This can occur if interest rates are shocked too low or \(g\) is too large.  \(L_2\) will grow too quickly if \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > \eta\).  Likewise, \(L_3\) can crowd out \(L_1\) if \(v_0+v_1g > \eta\).  
 
 \section{Results}
 
-Since the model is a system of non-linear differential equations, the model must be solved numerically.  I show plots of two economies under different interest rate and fiscal policy regimes.  The full parameters for these two economies:
+Since the model is a system of non-linear differential equations, the model must be solved numerically.  I show plots of an economy under different interest rate and fiscal policy regimes.  The full parameters for this economy:
 
 \begin{center}
-\begin{tabular}{ c c c }
-      Variable  & Economy 1 Value & Economy 2 Value \\ 
-      \(\eta\) & 0.02 & 0.02 \\  
-      \(\gamma_0\) & 0.004 & 0.04  \\  
-      \(\gamma_1\) & 0.2 & 0.2  \\  
-      \(\gamma_2\) & 0.005 & 0.005  \\ 
-      \(v_0\) & 0.001 & 0.001  \\  
-      \(v_1\) & 0.05 & 0.05  \\  
-      \(\beta\) & 0.03 & 0.03  \\  
-      \(\alpha\) & 0.4 & 0.4  \\  
-      \(\delta\) & 0.1 & 0.1  \\  
-      \(s\) & 0.3 & 0.3  \\ 
-      \(L_1(0)\) & 3.0 & 3.0  \\ 
-      \(L_2(0)\) & 1.0 & 1.0  \\ 
-      \(L_3(0)\) & 1.0 & 1.0  \\ 
-      \(A(0)\) & 2.0 & 2.0  \\ 
-      \(K(0)\) & 10.0 & 10.0  
+\begin{tabular}{ c c }
+      Variable  & Value  \\ 
+      \(\eta\) & 0.02 \\  
+      \(\gamma_0\) & 0.004   \\  
+      \(\gamma_1\) & 1.5   \\  
+      \(\gamma_2\) & 0.005   \\ 
+      \(v_0\) & 0.001  \\  
+      \(v_1\) & 0.05  \\  
+      \(a\) & 0.1  \\
+      \(\beta\) & 0.03   \\  
+      \(\alpha\) & 0.4   \\  
+      \(\delta\) & 0.1   \\  
+      \(s\) & 0.3   \\ 
+      \(L_1(0)\) & 3.0   \\ 
+      \(L_2(0)\) & 1.0  \\ 
+      \(L_3(0)\) & 1.0   \\ 
+      \(A(0)\) & 2.0  \\ 
+      \(K(0)\) & 10.0   
 \end{tabular}
 \end{center}
 
-\subsection{Low base growth of research}
-
-In the first economy, the base growth rate of \(L_2\) is low, providing quite a bit of freedom for monetary policy.  
+Monetary policy in either direction can lead to low growth or collapse.  An increase in interest rates can lead to lower levels of technology improvement, which can slow economic growth.  A decrease in interest rates can lead to unsustainable growth in technology labor, leading to economic collapse.  Similarly, as fiscal policy gets larger, more of the productive economy is ``crowded out''.  At very high levels of government spending, the economy tends towards collapse as non-productive labor increases.     
 
 \begin{minipage}[c]{0.8\linewidth}
 \begin{framed}
@@ -183,47 +184,18 @@ In the first economy, the base growth rate of \(L_2\) is low, providing quite a 
 \centering
 \includegraphics[width=1\textwidth]{images/econ_0_run_4_labor}
 \end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_0_run_5_labor}
+\end{minipage}\hfill
+\begin{minipage}[t]{.48\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{images/econ_0_run_6_labor}
+\end{minipage}\hfill
 \end{framed}
 \end{minipage}
 
 The economy becomes stagnant when \(L_2\) goes to zero and collapses when \(L_3\) grows without bound.  For low levels of fiscal involvement there is a tradeoff between the positive impact that fiscal policy has on research and the disincentives to work and the increased size of the bureaucratic state.  As can be seen with the blue and green lines in the total output chart, the output difference between a 0\% and 15\% fiscal stimulus is very small.  It requires a quite large fiscal output (80\% of the economy) to lead to economic collapse.
-
-\subsection{High base growth of research}
-
-In the second economy, the base growth rate of \(L_2\) is high, so that even mild interest rate regimes have deleterious long run impacts.
-
-\begin{minipage}{0.8\linewidth}
-\begin{framed}
-\centering
-\includegraphics[width=1\textwidth]{images/economy_1}
-\end{framed}
-\end{minipage}
-
-
-\begin{minipage}{\linewidth}
-\begin{framed}
-\begin{minipage}[t]{.48\textwidth}
-\centering
-\includegraphics[width=1\textwidth]{images/econ_1_run_0_labor}
-\end{minipage}\hfill
-\begin{minipage}[t]{.48\textwidth}
-\centering
-\includegraphics[width=1\textwidth]{images/econ_1_run_1_labor}
-\end{minipage}\hfill
-\begin{minipage}[t]{.48\textwidth}
-\centering
-\includegraphics[width=1\textwidth]{images/econ_1_run_2_labor}
-\end{minipage}\hfill
-\begin{minipage}[t]{.48\textwidth}
-\centering
-\includegraphics[width=1\textwidth]{images/econ_1_run_3_labor}
-\end{minipage} \hfill
-\begin{minipage}[t]{.48\textwidth}
-\centering
-\includegraphics[width=1\textwidth]{images/econ_1_run_4_labor}
-\end{minipage}\hfill
-\end{framed}
-\end{minipage}
 
 \section{Conclusion}
 

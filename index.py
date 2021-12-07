@@ -52,8 +52,12 @@ def drift_k(
     return s * y(k_curr, a_curr, l1_curr, alpha) - l2_curr - delta * k_curr
 
 
+def drift_rate(a: float, natural_rate: float, rate_curr: float) -> float:
+    return a * (natural_rate - rate_curr)
+
+
 class Economy:
-    def __init__(self, y, k, a, l1, l2, l3):
+    def __init__(self, y, k, a, shock_rate, l1, l2, l3):
         total_l = l1 + l2 + l3
         self.y = [y]
         self.k = [k]
@@ -64,6 +68,7 @@ class Economy:
         self.y_per_labor = [y / total_l]
         self.t = [0]
         self.total_l = [total_l]
+        self.rate = [shock_rate]
 
 
 class EvolveEconomy:
@@ -75,6 +80,7 @@ class EvolveEconomy:
         gamma2,
         v0,
         v1,
+        a,
         beta,
         alpha,
         delta,
@@ -91,6 +97,7 @@ class EvolveEconomy:
         self.gamma2 = gamma2
         self.v0 = v0
         self.v1 = v1
+        self.a = a
         self.beta = beta
         self.alpha = alpha
         self.delta = delta
@@ -105,7 +112,8 @@ class EvolveEconomy:
     def execute_period(
         self,
         dt: float,
-        deviation_from_natural_interest_rate: float,
+        natural_rate: float,
+        # deviation_from_natural_interest_rate: float,
         gdp_ratio: float,
         econ: Economy,
     ):
@@ -113,7 +121,7 @@ class EvolveEconomy:
             self.gamma0,
             self.gamma1,
             self.gamma2,
-            deviation_from_natural_interest_rate,
+            natural_rate - econ.rate[-1],
             gdp_ratio,
             econ.l2[-1],
         )
@@ -121,6 +129,7 @@ class EvolveEconomy:
         l1_drift = drift_l1(
             self.eta, econ.l1[-1], econ.l2[-1], econ.l3[-1], l2_drift, l3_drift
         )
+        rate_drift = drift_rate(self.a, natural_rate, econ.rate[-1])
         k_drift = drift_k(
             econ.k[-1],
             econ.a[-1],
@@ -139,12 +148,14 @@ class EvolveEconomy:
         curr_a = a_drift * dt + econ.a[-1]
         curr_y = y(curr_k, curr_a, curr_l1, self.alpha)
         curr_l = curr_l1 + curr_l2 + curr_l3
+        curr_rate = econ.rate[-1] + rate_drift * dt
         econ.l1.append(curr_l1)
         econ.l2.append(curr_l2)
         econ.l3.append(curr_l3)
         econ.k.append(curr_k)
         econ.a.append(curr_a)
         econ.y.append(curr_y)
+        econ.rate.append(curr_rate)
 
         econ.y_per_labor.append(curr_y / curr_l)
         econ.total_l.append(curr_l)
@@ -152,7 +163,9 @@ class EvolveEconomy:
 
     def simulate(
         self,
-        deviation_from_natural_interest_rate: float,
+        # deviation_from_natural_interest_rate: float,
+        natural_rate: float,
+        shock_rate: float,
         gdp_ratio: float,
         t: float,
         n: int,
@@ -161,15 +174,14 @@ class EvolveEconomy:
             y=self.y_init,
             k=self.k_init,
             a=self.a_init,
+            shock_rate=shock_rate,
             l1=self.l1_init,
             l2=self.l2_init,
             l3=self.l3_init,
         )
         dt = t / (n)
         for i in range(n):
-            self.execute_period(
-                dt, deviation_from_natural_interest_rate, gdp_ratio, econ
-            )
+            self.execute_period(dt, natural_rate, gdp_ratio, econ)
         return econ
 
 
@@ -178,10 +190,11 @@ if __name__ == "__main__":
         {
             "eta": 0.02,
             "gamma0": 0.004,
-            "gamma1": 0.2,
+            "gamma1": 1.5,
             "gamma2": 0.005,  # small amount of spending on R&D
             "v0": 0.001,  # Low rate of bureacracy with no govt spending
             "v1": 0.05,
+            "a": 0.1,
             "beta": 0.03,
             "alpha": 0.4,
             "delta": 0.1,
@@ -194,11 +207,12 @@ if __name__ == "__main__":
         },
         {
             "eta": 0.02,
-            "gamma0": 0.04,  # large enough to cause L2 to explode relative to l1 and l3
-            "gamma1": 0.2,
+            "gamma0": 0.02,  # large enough to cause L2 to explode relative to l1 and l3
+            "gamma1": 1.5,  # this should increase L2...right?
             "gamma2": 0.005,  # small amount of spending on R&D
             "v0": 0.001,  # Low rate of bureacracy with no govt spending
             "v1": 0.05,
+            "a": 0.1,
             "beta": 0.03,
             "alpha": 0.4,
             "delta": 0.1,
@@ -211,19 +225,25 @@ if __name__ == "__main__":
         },
     ]
     example_inputs = [
-        (0.03, 0.15),
-        (0.06, 0.15),
-        (0.03, 0.0),
-        (-0.07, 0.15),
-        (0.03, 0.8),
+        (0.08, 0.05, 0.15),
+        (0.08, 0.02, 0.15),
+        (0.08, 0.05, 0.0),
+        (0.08, 0.1, 0.0),
+        (0.08, 0.08, 0.15),
+        (0.08, 0.15, 0.15),
+        (0.08, 0.05, 0.8),
     ]
     t = 100
     n = 100000
     for index, economy in enumerate(economy_parameters):
         econ = EvolveEconomy(**economy)
-        for sub_index, (rate, ratio) in enumerate(example_inputs):
+        for sub_index, (natural_rate, rate_shock, ratio) in enumerate(example_inputs):
             sim = econ.simulate(
-                deviation_from_natural_interest_rate=rate, gdp_ratio=ratio, t=t, n=n
+                natural_rate=natural_rate,
+                shock_rate=rate_shock,
+                gdp_ratio=ratio,
+                t=t,
+                n=n,
             )
             plt.figure(
                 f"econ_{index}_run_main"
@@ -231,7 +251,7 @@ if __name__ == "__main__":
             plt.plot(
                 sim.t,
                 sim.y_per_labor,
-                label=f"rate deviation={rate}, gdp_ratio={ratio}",
+                label=f"rate shock={rate_shock}, gdp_ratio={ratio}",
             )
             plt.figure(f"econ_{index}_run_{sub_index}_labor")
             plt.plot(
@@ -250,7 +270,7 @@ if __name__ == "__main__":
                 label=f"L3",
             )
             plt.legend(loc="upper left")
-            plt.title(f"Labor for rate deviation={rate}, gdp_ratio={ratio}")
+            plt.title(f"Labor for rate shock={rate_shock}, gdp_ratio={ratio}")
             plt.savefig(f"images/econ_{index}_run_{sub_index}_labor.eps", format="eps")
         plt.figure(f"econ_{index}_run_main")
         plt.title(f"Output per capita")
