@@ -82,49 +82,70 @@ There are three homogenous pools of labor.  \(L_1(t)\) is labor that, combined w
 \\
 Following Solow \cite{solow}, output \(Y(t)\) takes the following form:
 
-\[Y(t)=K(t)^\alpha (A(t)L_1(t))^{1-\alpha}\]
+\[Y(t)=K(t)^\alpha (A(t)L(t)V_3(t))^{1-\alpha}\]
+
+\(V_3(t)\) is the fraction of total labor that is performing traditional labor; as opposed to bureaucratic or research labor.  
 
 \subsection{Dynamics}
 
-Total labor \(L(t)=L_1(t)+L_2(t)+L_3(t)\) is constrained by population growth.
+Labor grows exponentially.
 
 \[\frac{dL}{dt}=\eta L(t)\]
 
-\[\frac{dL_3(t)}{dt}=\left(v_0+v_1g\right)L_3(t)\left(1-\frac{L_3(t)}{Y(t)g}\right) \]
+Defining \(i^*\) as the long run interest rate, \(i(s)\) as the current interest rate, \(g\) as the fraction of output from government spending, and 
 
-Here \(v_0\) is the (presumably small) administrative state in the case of zero government involvement in the economy, and \(v_1\) measures the growth of the administrative state as the government's involvement in the economy grows larger.  This labor is capped by the total government spending in the economy.
+\[l_1=e^{\gamma_0+\gamma_1 \int_0^t \left(i^*-i(s)\right) ds+\gamma_2 \int_0^t g(s) ds }\]
+\[l_2=e^{\phi_0+\phi_1 \int_0^t g(s) ds}\]
 
-\[\frac{dL_2(t)}{dt}=\left(\gamma_0+\gamma_1 (i^*-i) +\gamma_2 g\right) L_2(t) \]
+Then the fractions of labor into the ``research'',  ``bureaucratic'', and ``traditional'', are governed by the following respectively:
 
-Here \(\gamma_0\) is the non-intervention (baseline) rate of growth in research labor, \(\gamma_1\) is the sensitivity of labor to the prevailing interest rate's deviation from the ``natural'' rate \(i^*\), and \(\gamma_2\) is the proportion of government spending that is dedicated to research and development.  For instance, federal grants to universities would be considered spending on basic research.  \(i\) has the following dynamics:
+\[V_1(t)=\frac{l_1(t)}{1+l_1(t)+l_2(t)}\]
+\[V_2(t)=\frac{l_2(t)}{1+l_1(t)+l_2(t)}\]
+\[V_3(t)=\frac{1}{1+l_1(t)+l_2(t)}\]
+
+Where \(\gamma_0\) is the non-intervention (baseline) rate of growth in research labor, \(\gamma_1\) is the sensitivity of labor to the prevailing interest rate's deviation from the ``natural'' rate \(i^*\), and \(\gamma_2\) is the proportion of government spending that is dedicated to research and development.  For instance, federal grants to universities would be considered spending on basic research.  \(\phi_0\) is the (presumably small) administrative state in the case of zero government involvement in the economy, and \(\phi_1\) measures the growth of the administrative state as the government's involvement in the economy grows larger. 
+
+The interest rate \(i\) has the following dynamics: 
 
 \[\frac{di(t)}{dt}=a\left(i^*-i\right)\]
+
+The government impact is ``sticky'' and impacts \(V_1\) and \(V_2\) at a rate \(b\).
+
+\[\frac{dg(t)}{dt}=b\left(g^*-g\right)\]
+
+Note that while monetary policy shocks \(i\) which then reverts at rate \(a\) to \(i^*\), the fiscal policy is assumed permanent and adjusts \(g^*\), with \(g(t)\) adjusting at rate \(b\) to the new permanent level.
 \\
 \\
-\(L_1\) is determined by the above equations:
-\[\frac{dL_1(t)}{dt}=\frac{dL}{dt}-\frac{dL_2(t)}{dt}-\frac{dL_3(t)}{dt}\] 
-\[=\eta\left(L_1(t)+L_2(t)+L_3(t)\right)-\frac{dL_2(t)}{dt}-\frac{dL_3(t)}{dt}\]
+Solving the integrals,
+\[l_1=e^{\gamma_0+\gamma_1  \left(i^*-i(0)\right)e^{-a t}+\gamma_2 \left( g_0 e^{-b t}+g^*\left(1-e^{-b t}\right) \right) }\]
+\[l_2=e^{\phi_0+\phi_1  \left( g_0 e^{-b t}+g^*\left(1-e^{-b t}\right) \right)}\]
 \\
 \\
 Technology dynamics are directly proportional to the labor dedicated to research.  While in reality research requires some level of capital, the assumption simplifies the analysis.  Many kinds of research (for example, mathematics and economics) requires minimal capital investment.  Of course, the physical sciences often require massive capital investments.  This is a shortcoming of the model.  Note that this also deviates from the classic Solow model where technological growth is exogoneous.
-\[\frac{dA(t)}{dt}=\beta L_2(t)\]
+\[\frac{dA(t)}{dt}=\beta L(t) V_1(t)\]
 
 Finally, capital follows the familiar dynamics from Solow:
-\[\frac{dK(t)}{dt}=s Y(t) - \delta K(t)- L_2(t)\]
-\(s\) is the saving rate, \(\delta\) is the rate of capital depreciation, and it is assumed that investment in technology (via \(L_2\)) crowds out investment in capital.  
+\[\frac{dK(t)}{dt}=s Y(t) - \delta K(t)-  L(t) V_1(t)\]
+\(s\) is the saving rate, \(\delta\) is the rate of capital depreciation, and it is assumed that investment in technology (via \( L(t) V_1(t)\)) crowds out investment in capital.  
 
 \subsection{Model analysis}
 
-I focus on output per capita, \(\frac{Y(t)}{L(t)}\). There are three possible long-run states to the model.  First is exponential growth.  This occurs if \(A(t)\) is allowed to grow through time while not crowding out growth in \(L_1(t)\).  The second is a steady state.  This occurs if \(L_2(t)\) shrinks to zero, causing \(A(t)\) to converge to a constant.  The third is economic collapse.  This occurs if \(L_1(t)\) shrinks to zero due to crowding out from \(L_2(t)\) and \(L_3(t)\).  
+I focus on output per capita, \(\frac{Y(t)}{L(t)}\). There are three possible long-run states to the model.  First is exponential growth.  Exponential growth occurs if \(V_1(t)\), \(V_2(t)\), and \(V_3\) reach non-zero steady states and the drift of \(K\) remains positive.  The second is a steady state.  This occurs if \(V_1(t)\) shrinks to zero, causing \(A(t)\) to converge to a constant.  The third is economic collapse.  This occurs if \(V_1(t)\) and \(V_2(t)\) are too large; causing capital \(K\) to have negative drift. 
 
 \subsubsection{Exponential growth}
-If \(\eta >\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > 0\) then \(L_2\) will continue to grow.  This implies that \(A(t)\) will grow without bound, and continued technological growth can continue to provide improved output per capita.  However, this is only the case if both \(L_2(t)\) grows slowly enough to not cause capital to be consumed and \(L_1(t)\) also continues to grow.  
+Exponential growth occurs if  
+\[\lim_{t \to \infty} s K(t)^\alpha (A(t)L(t)V_3(t))^{1-\alpha} > \lim_{t \to \infty} \delta K(t) +  L(t) V_1(t)\] 
+and \(\lim_{t \to \infty} V_1(t) > 0 \).
 
 \subsubsection{Steady state}
-If \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g <0\) then \(L_2(t)\) will shrink to zero and \(A(t)\) will converge to a constant.  If \(L_1(t)\) continues to grow (is not crowded out by \(L_3(t)\)), the economy reaches a long-run steady state in much the same way as the traditional Solow model.
+A steady state occurs if  
+\[\lim_{t \to \infty} s K(t)^\alpha (A(t)L(t)V_3(t))^{1-\alpha} > \lim_{t \to \infty} \delta K(t) +  L(t) V_1(t)\] 
+and \(\lim_{t \to \infty} V_1(t) =0\).
 
 \subsubsection{Economic collapse}
-If either \(L_2\) or \(L_3\) grow too large, either \(K\) or \(L_1\) can shrink to zero.  This can occur if interest rates are shocked too low or \(g\) is too large.  \(L_2\) will grow too quickly if \(\gamma_0+\gamma_1 (i^*-i)+\gamma_2 g > \eta\).  Likewise, \(L_3\) can crowd out \(L_1\) if \(v_0+v_1g > \eta\).  
+Economic collapse occurs if 
+\[\lim_{t \to \infty}s K(t)^\alpha (A(t)L(t)V_3(t))^{1-\alpha} < \lim_{t \to \infty} \delta K(t) +  L(t) V_1(t)\] 
+This can occur if too much labor is invested in technology (ie, \(V_1(t)\) is ``too high'') or if there is too much labor that is either not working or maintaining the bureaucratic state (ie, \(V_3(t)\) is ``too low'').                                
 
 \section{Results}
 
